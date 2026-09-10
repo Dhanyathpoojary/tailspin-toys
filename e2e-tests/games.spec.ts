@@ -24,6 +24,19 @@ test.describe('Game Listing and Navigation', () => {
     });
   });
 
+  test('should filter games by category and publisher', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByTestId('games-grid')).toBeVisible();
+
+    await page.getByTestId('category-filter').selectOption({ label: 'Strategy' });
+    await expect(page.getByTestId('filter-results')).toHaveText('Showing 4 games');
+
+    await page.getByTestId('publisher-filter').selectOption({ label: 'CodeForge Studios' });
+
+    await expect(page.getByTestId('filter-results')).toHaveText('Showing 1 game');
+    await expect(page.locator('[data-testid="game-card"]:visible')).toHaveCount(1);
+  });
+
   test('should navigate to correct game details page when clicking on a game', async ({ page }) => {
     let gameId: string | null;
     let gameTitle: string | null;
